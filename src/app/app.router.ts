@@ -1,10 +1,9 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import * as appController from './app.controller';
 
 const router = express.Router();
 
-router.get('/', (request: Request, response: Response) => {
-  response.send({ title: '小白兔的开发之路' });
-});
+router.get('/', appController.home);
 
 /**
  * 导出路由
