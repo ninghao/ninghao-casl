@@ -10,7 +10,7 @@ export const home = async (
   response: Response,
   next: NextFunction,
 ) => {
-  const user = { id: 1 };
+  const user = { id: 1, isVerified: true };
   const ability = defineAbilityFor(user);
   const post = new Post();
   post.status = 'published';
@@ -21,11 +21,15 @@ export const home = async (
   const canReadPost = ability.can('read', post);
   const canUpdatePost = ability.can('update', post);
   const canUpdateOwnPost = ability.can('update', ownPost);
+  const canUpdateOwnPostTitle = ability.can('update', ownPost, 'title');
+  const canUpdateOwnPostStatus = ability.can('update', ownPost, 'status');
 
   response.send({
     canReadPost,
     canUpdatePost,
     canUpdateOwnPost,
+    canUpdateOwnPostTitle,
+    canUpdateOwnPostStatus,
     postType,
   });
 };
