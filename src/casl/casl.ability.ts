@@ -1,14 +1,27 @@
-import { AbilityBuilder, Ability } from '@casl/ability';
+import { Ability } from '@casl/ability';
 
 export default (user: any) => {
-  const { can, cannot, build } = new AbilityBuilder(Ability);
-
-  can('read', 'Post', { status: 'published' });
-  can('update', 'Post', ['title'], { userId: user.id });
+  const rules = [
+    {
+      action: 'read',
+      subject: 'Post',
+    },
+    {
+      action: 'update',
+      subject: 'Post',
+      fields: ['title'],
+      conditions: { userId: user.id },
+    },
+  ];
 
   if (user.isVerified) {
-    can('update', 'Post', ['status'], { userId: user.id });
+    rules.push({
+      action: 'update',
+      subject: 'Post',
+      fields: ['status'],
+      conditions: { userId: user.id },
+    });
   }
 
-  return build();
+  return new Ability(rules);
 };
