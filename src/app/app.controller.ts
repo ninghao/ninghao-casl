@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import ability from '../casl/casl.ability';
+import defineAbilityFor from '../casl/casl.ability';
 import { Post } from '../post/post.model';
 
 /**
@@ -10,12 +10,22 @@ export const home = async (
   response: Response,
   next: NextFunction,
 ) => {
+  const user = { id: 1 };
+  const ability = defineAbilityFor(user);
   const post = new Post();
+  post.status = 'published';
+  const ownPost = new Post();
+  ownPost.userId = user.id;
   const postType = post.constructor.name;
+
   const canReadPost = ability.can('read', post);
+  const canUpdatePost = ability.can('update', post);
+  const canUpdateOwnPost = ability.can('update', ownPost);
 
   response.send({
     canReadPost,
+    canUpdatePost,
+    canUpdateOwnPost,
     postType,
   });
 };
