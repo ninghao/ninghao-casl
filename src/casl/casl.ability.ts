@@ -1,11 +1,14 @@
-import { defineAbility } from '@casl/ability';
+import { AbilityBuilder, Ability } from '@casl/ability';
 
-export default (user: any) =>
-  defineAbility((can, cannot) => {
-    can('read', 'Post', { status: 'published' });
-    can('update', 'Post', ['title'], { userId: user.id });
+export default (user: any) => {
+  const { can, cannot, build } = new AbilityBuilder(Ability);
 
-    if (user.isVerified) {
-      can('update', 'Post', ['status'], { userId: user.id });
-    }
-  });
+  can('read', 'Post', { status: 'published' });
+  can('update', 'Post', ['title'], { userId: user.id });
+
+  if (user.isVerified) {
+    can('update', 'Post', ['status'], { userId: user.id });
+  }
+
+  return build();
+};
