@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import ability from '../casl/casl.ability';
+import { Post } from '../post/post.model';
 
 /**
  * 应用首页
@@ -9,13 +10,12 @@ export const home = async (
   response: Response,
   next: NextFunction,
 ) => {
-  const canReadPost = ability.can('read', 'Post');
-  const canDeleteComment = ability.can('delete', 'Comment');
-  const canDeleteUser = ability.can('delete', 'User');
+  const post = new Post();
+  const postType = post.constructor.name;
+  const canReadPost = ability.can('read', post);
 
   response.send({
     canReadPost,
-    canDeleteComment,
-    canDeleteUser,
+    postType,
   });
 };
